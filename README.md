@@ -1,4 +1,3 @@
-<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -169,7 +168,7 @@ footer{max-width:90rem;margin:0 auto;padding:clamp(4rem,10vh,7rem) var(--pad) ma
 <a class="skip" href="#work">Skip to work</a>
 
 <header class="nav">
-  <a class="home" href="#top">Your Name</a><!-- EDIT -->
+  <a class="home" href="#top">Calvin Moras</a>
   <nav aria-label="Sections">
     <ul>
       <li><a href="#work">Work</a></li>
