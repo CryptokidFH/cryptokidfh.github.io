@@ -6,9 +6,10 @@
 <!-- EDIT: your name and a one-line description (shows in search results and link previews) -->
 <title>Calvin Moras: light, code, and hardware</title>
 <meta name="description" content="Real-time visuals in TouchDesigner, laser systems, reverse engineering, Python, and photography.">
-<meta property="og:title" content="Your Name">
+<meta property="og:title" content="Calvin Moras">
 <meta property="og:description" content="Real-time visuals, lasers, reverse engineering, Python, and photography.">
 <meta name="theme-color" content="#16132B">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2316132B'/%3E%3Cpath d='M30 6 2 26M30 6 6 26M30 6 12 27' stroke='%23FF4A3D' stroke-width='1.5'/%3E%3Ccircle cx='30' cy='6' r='3' fill='%23FFD9D4'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,400..900&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400&display=swap">
@@ -28,6 +29,7 @@
 }
 *,*::before,*::after{box-sizing:border-box}
 html{background:var(--haze);color:var(--text);-webkit-text-size-adjust:100%}
+html,body{overflow-x:clip}   /* a long unbreakable heading can never drag the page sideways */
 @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
 body{margin:0;font-family:var(--body);font-size:1.125rem;line-height:1.6;font-optical-sizing:auto;-webkit-font-smoothing:antialiased}
 img,video,canvas{display:block;max-width:100%}
@@ -55,6 +57,14 @@ a:hover{text-decoration-color:var(--beam)}
 h1{font-family:var(--display);font-weight:850;font-stretch:150%;font-size:clamp(3rem,11vw,10.5rem);
   line-height:.84;letter-spacing:-.015em;margin:0 0 1.4rem}
 h1 span{display:block}
+/* One orchestrated moment on load: the name widens along the same axis the headings use. */
+@media (prefers-reduced-motion:no-preference){
+  h1 span{animation:power-on .9s var(--ease) both}
+  h1 span:nth-child(2){animation-delay:.12s}
+  .lede,.hero-controls{animation:lift .7s var(--ease) .45s both}
+}
+@keyframes power-on{from{font-stretch:60%;opacity:0}to{font-stretch:150%;opacity:1}}
+@keyframes lift{from{opacity:0;transform:translateY(.6rem)}to{opacity:1;transform:none}}
 .lede{max-width:38ch;margin:0;font-size:clamp(1.15rem,1.6vw,1.35rem);line-height:1.5;text-shadow:0 1px 14px rgb(22 19 43 / .9)}
 .hero-controls{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1rem 2rem;margin-top:2rem}
 .hint{margin:0;color:var(--dim);font-size:.95rem}
@@ -67,13 +77,18 @@ h1 span{display:block}
 .nm button[aria-pressed="true"]::before{box-shadow:0 0 10px 2px var(--c)}
 
 /* Sections */
-.section{max-width:90rem;margin:0 auto;padding:clamp(5rem,12vh,9rem) var(--pad) 0;scroll-margin-top:2rem}
+.section{max-width:90rem;margin:0 auto;padding:clamp(5rem,12vh,9rem) var(--pad) 0}
+/* Anchors and auto-scrolls must clear the fixed bar rather than land behind it. */
+.section,.discipline{scroll-margin-top:calc(4.75rem + env(safe-area-inset-top,0px))}
 .section-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:.75rem 2rem;margin-bottom:clamp(2rem,5vh,3.5rem)}
-h2{font-family:var(--display);font-weight:800;font-stretch:140%;font-size:clamp(2.5rem,7vw,5.5rem);line-height:.95;letter-spacing:-.01em;margin:0}
+h2{font-family:var(--display);font-weight:800;font-stretch:140%;font-size:clamp(2.1rem,7vw,5.5rem);line-height:.95;letter-spacing:-.01em;margin:0;
+  max-width:100%}
 .section-head p{margin:0;color:var(--dim);max-width:34ch}
 
-/* Work: expandable disciplines */
+/* Work: expandable disciplines. Each sets its own --beam, so the rule, the links and
+   the media placeholders inside it all pick up that discipline's colour. */
 .discipline{border-top:1px solid var(--line)}
+.discipline .count{color:color-mix(in oklab,var(--beam) 60%,var(--dim))}
 .discipline:last-of-type{border-bottom:1px solid var(--line)}
 .discipline summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:.4rem 1.5rem;align-items:baseline;
   padding:clamp(1.3rem,3vh,2rem) 0}
@@ -91,9 +106,14 @@ h2{font-family:var(--display);font-weight:800;font-stretch:140%;font-size:clamp(
 .discipline::details-content{block-size:0;overflow:hidden;transition:block-size .55s var(--ease),content-visibility .55s allow-discrete}
 .discipline[open]::details-content{block-size:auto}
 
-.projects{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,19rem),1fr));gap:2.5rem 2rem;padding:.75rem 0 3rem}
+.projects{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,19rem),1fr));gap:2.5rem 2rem;padding:.75rem 0 3rem}
 .project h4{font-family:var(--display);font-weight:700;font-stretch:110%;font-size:1.3rem;line-height:1.2;margin:1rem 0 .4rem}
 .project p{margin:0;color:var(--dim);font-size:1.02rem}
+.project p + p{margin-top:.5rem}
+.meta{font-family:var(--display);font-stretch:105%;font-size:.85rem;
+  color:color-mix(in oklab,var(--beam) 55%,var(--dim))}
+.ph > span{max-width:24ch}
+.ph code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.85em}
 .links{display:flex;flex-wrap:wrap;gap:.5rem 1.25rem;margin-top:.7rem;font-size:1rem}
 .media{aspect-ratio:16/10;border-radius:6px;overflow:hidden;background:var(--haze-2)}
 .media img,.media video{width:100%;height:100%;object-fit:cover}
@@ -109,13 +129,18 @@ h2{font-family:var(--display);font-weight:800;font-stretch:140%;font-size:clamp(
 .pip:hover{border-color:var(--beam)}
 
 /* Photographs */
+.filter{display:flex;gap:.5rem;margin:-1rem 0 1.75rem}
+.filter button{font:inherit;font-family:var(--display);font-stretch:108%;font-size:.95rem;color:var(--dim);background:none;
+  border:1px solid var(--line);border-radius:999px;min-height:40px;padding:0 1rem;cursor:pointer;transition:color .2s,border-color .2s}
+.filter button[aria-pressed="true"]{color:var(--text);border-color:var(--beam)}
 .gallery{display:flex;gap:1rem;align-items:flex-start}
 .col{flex:1;min-width:0;display:flex;flex-direction:column;gap:1rem}
 .shot{position:relative;display:block;width:100%;padding:0;border:0;border-radius:4px;overflow:hidden;background:var(--haze-2);cursor:zoom-in}
 .shot img,.shot video,.shot .demo{width:100%;height:100%;object-fit:cover}
 @media (hover:hover){
   .shot img,.shot video,.shot .demo{filter:brightness(.82);transition:filter .45s var(--ease)}
-  .shot:hover img,.shot:hover video,.shot:hover .demo,.shot:focus-visible img{filter:brightness(1)}
+  .shot:hover img,.shot:hover video,.shot:hover .demo,
+  .shot:focus-visible img,.shot:focus-visible video,.shot:focus-visible .demo{filter:brightness(1)}
 }
 .chip{position:absolute;left:.6rem;bottom:.6rem;font-family:var(--display);font-size:.75rem;padding:.2rem .55rem;border-radius:999px;
   background:rgb(22 19 43 / .75);color:var(--text)}
@@ -155,6 +180,11 @@ footer{max-width:90rem;margin:0 auto;padding:clamp(4rem,10vh,7rem) var(--pad) ma
   .nav ul{gap:1rem}
 }
 @media (max-width:640px){
+  /* The display face is very wide; a single long word like "Photographs" would otherwise
+     run past the screen edge, so narrow the width axis and the size together. */
+  h2{font-stretch:100%;font-size:clamp(2rem,9vw,3.1rem)}
+  h3{font-stretch:100%}
+  .discipline[open] h3{font-stretch:118%}
   h1{font-stretch:108%;font-size:clamp(2.8rem,15vw,5rem)}
   .home{font-stretch:100%}
   .lb-prev,.lb-next{top:auto;bottom:1rem;translate:none}
@@ -210,10 +240,10 @@ footer{max-width:90rem;margin:0 auto;padding:clamp(4rem,10vh,7rem) var(--pad) ma
       (data-inview makes the clip play only while it's on screen.)
     -->
 
-    <details class="discipline" open>
+    <details class="discipline" open style="--beam:#6A5BFF">
       <summary>
         <h3>Real-time visuals</h3>
-        <span class="count">3 projects</span>
+        <span class="count"></span>
         <p class="blurb">TouchDesigner networks for live shows, installations, and audio-reactive pieces.</p><!-- EDIT -->
         <span class="beamline" aria-hidden="true"></span>
       </summary>
@@ -222,27 +252,30 @@ footer{max-width:90rem;margin:0 auto;padding:clamp(4rem,10vh,7rem) var(--pad) ma
           <div class="media ph">Add a render or screen capture</div>
           <h4>Project title</h4>
           <p>What it is, where it ran, and the one technique you're proud of.</p>
+          <p class="meta">TouchDesigner, GLSL</p>
           <div class="links"><a href="#">Watch</a><a href="#">.toe file</a></div>
         </article>
         <article class="project">
           <div class="media ph">Add a render or screen capture</div>
           <h4>Project title</h4>
           <p>What it is, where it ran, and the one technique you're proud of.</p>
+          <p class="meta">TouchDesigner, GLSL</p>
           <div class="links"><a href="#">Watch</a></div>
         </article>
         <article class="project">
           <div class="media ph">Add a render or screen capture</div>
           <h4>Project title</h4>
           <p>What it is, where it ran, and the one technique you're proud of.</p>
+          <p class="meta">TouchDesigner, GLSL</p>
           <div class="links"><a href="#">Watch</a></div>
         </article>
       </div>
     </details>
 
-    <details class="discipline">
+    <details class="discipline" style="--beam:#FF4A3D">
       <summary>
         <h3>Lasers</h3>
-        <span class="count">2 projects</span>
+        <span class="count"></span>
         <p class="blurb">Laser shows, scanner builds, and beam effects tuned for haze.</p><!-- EDIT -->
         <span class="beamline" aria-hidden="true"></span>
       </summary>
@@ -251,55 +284,67 @@ footer{max-width:90rem;margin:0 auto;padding:clamp(4rem,10vh,7rem) var(--pad) ma
           <div class="media ph">Add a photo or clip of the beams</div>
           <h4>Project title</h4>
           <p>The hardware, the control path, and what it looked like in the room.</p>
+          <p class="meta">Scanners, ILDA</p>
           <div class="links"><a href="#">Watch</a></div>
         </article>
         <article class="project">
           <div class="media ph">Add a photo or clip of the beams</div>
           <h4>Project title</h4>
           <p>The hardware, the control path, and what it looked like in the room.</p>
+          <p class="meta">Scanners, ILDA</p>
           <div class="links"><a href="#">Build notes</a></div>
         </article>
       </div>
     </details>
 
-    <details class="discipline">
+    <details class="discipline" data-unit="write-up" style="--beam:#4DFF3F">
       <summary>
         <h3>Reverse engineering</h3>
-        <span class="count">2 write-ups</span>
+        <span class="count"></span>
         <p class="blurb">Firmware, protocols, and devices taken apart to learn how they work.</p><!-- EDIT -->
         <span class="beamline" aria-hidden="true"></span>
       </summary>
       <div class="projects">
         <article class="project">
-          <div class="media ph">Add a board shot or disassembly screenshot</div>
-          <h4>Write-up title</h4>
-          <p>The target, the question you started with, and what you found.</p>
-          <div class="links"><a href="#">Read the write-up</a><a href="#">Code</a></div>
+          <div class="media ph">Add a capture of the frames, or a shot of the lamp</div>
+          <h4>The Barava LAN protocol</h4>
+          <p>The vendor's docs were wrong in two places that mattered. Heater readings turned out to
+            be Fahrenheit, not Celsius, and the fill colour field is a hue from 0 to 360 rather than a
+            packed RGB value, which I worked out from six readings on real hardware.</p>
+          <p class="meta">Packet capture, mDNS, firmware 1.0.1</p>
+          <div class="links"><a href="https://github.com/CryptokidFH/pyrava">Findings and code</a></div>
         </article>
         <article class="project">
           <div class="media ph">Add a board shot or disassembly screenshot</div>
           <h4>Write-up title</h4>
           <p>The target, the question you started with, and what you found.</p>
+          <p class="meta">Tools you used</p>
           <div class="links"><a href="#">Read the write-up</a></div>
         </article>
       </div>
     </details>
 
-    <details class="discipline">
+    <details class="discipline" style="--beam:#FFC53D">
       <summary>
         <h3>Software</h3>
-        <span class="count">1 package, more on GitHub</span>
+        <span class="count"></span>
         <p class="blurb">Python, tools, and the code that holds the other projects together.</p><!-- EDIT -->
         <span class="beamline" aria-hidden="true"></span>
       </summary>
       <div class="pkg">
         <div>
-          <h4>your-package</h4><!-- EDIT: package name -->
-          <p>One sentence on what it does and who it's for. A second on why you built it.</p>
-          <button class="pip" type="button" data-copy="pip install your-package"><code>pip install your-package</code><span>Copy</span></button>
-          <div class="links"><a href="#">PyPI</a><a href="#">Source</a><a href="#">Docs</a></div>
+          <h4>pyrava</h4>
+          <p>A zero-dependency Python client for Barava smart lamps, written from the vendor's
+            protocol notes and then corrected against firmware 1.0.1 on real hardware. It covers
+            discovery, the deferred-reply keepalive cycle, the five LED zones, and an animation
+            compiler, with a command line for driving all of it.</p>
+          <button class="pip" type="button" data-copy="pip install pyrava"><code>pip install pyrava</code><span>Copy</span></button>
+          <div class="links">
+            <a href="https://pypi.org/project/pyrava/">PyPI</a>
+            <a href="https://github.com/CryptokidFH/pyrava">Source</a>
+          </div>
         </div>
-        <div class="media ph">Add a terminal screenshot or a small demo GIF</div>
+        <div class="media ph"><span>Add a screenshot of <code>pyrava watch</code> or <code>pyrava screen</code></span></div>
       </div>
       <div class="projects">
         <article class="project">
@@ -321,6 +366,11 @@ footer{max-width:90rem;margin:0 auto;padding:clamp(4rem,10vh,7rem) var(--pad) ma
       <h2>Photographs</h2>
       <p>Select any frame to view it large. Use the arrow keys or swipe to move between them.</p>
     </div>
+    <div class="filter" role="group" aria-label="Filter photographs" id="filter" hidden>
+      <button type="button" data-filter="all" aria-pressed="true">All</button>
+      <button type="button" data-filter="image" aria-pressed="false">Stills</button>
+      <button type="button" data-filter="video" aria-pressed="false">Clips</button>
+    </div>
     <div class="gallery" id="gallery"></div>
     <noscript><p>The gallery needs JavaScript to load.</p></noscript>
   </section>
@@ -333,7 +383,7 @@ footer{max-width:90rem;margin:0 auto;padding:clamp(4rem,10vh,7rem) var(--pad) ma
         <p>I'm always looking for new light sources to play with, especially if I can write a keyboard shortcut to control them!</p>
       </div>
       <ul class="contact"><!-- EDIT: your links -->
-        <li><a href="mailto:you@example.com">Email <span>calvinmoras117@gmail.com</span></a></li>
+        <li><a href="mailto:calvinmoras117@gmail.com">Email <span>calvinmoras117@gmail.com</span></a></li>
         <li><a href="https://github.com/CryptokidFH">GitHub <span>@CryptokidFH</span></a></li>
         <li><a href="https://pypi.org/project/pyrava">PyPI <span>Pyrava</span></a></li>
         <li><a href="resume.pdf">Résumé <span>PDF</span></a></li>
@@ -372,6 +422,7 @@ const dirs = new Float32Array(BEAMS * 2);
 let W = 0, H = 0, maxDpr = coarse ? 1.25 : 1.5, density = 5200;
 let particles = [], color = [255, 74, 61];
 let running = false, visible = true, raf = 0;
+let boot = reduce ? 1 : 0, bootStart = 0;   // beams fade up once on first paint
 const aim = { x: 0, y: 0 }, cur = { x: 0, y: 0 };
 let lastInput = -1e9;
 
@@ -405,6 +456,12 @@ function draw(t, still) {
     aim.x = W * (.4 + .3 * Math.sin(t * .00029));
     aim.y = H * (.45 + .3 * Math.sin(t * .00043 + 1.3));
   }
+  if (boot < 1 && !still) {                      // power-on ramp, runs once
+    if (!bootStart) bootStart = t;
+    boot = Math.min(1, (t - bootStart) / 1100);
+    boot = 1 - Math.pow(1 - boot, 3);
+  }
+  const bb = still ? 1 : boot;
   const k = (reduce || still) ? 1 : .075;
   cur.x += (aim.x - cur.x) * k; cur.y += (aim.y - cur.y) * k;
 
@@ -415,7 +472,7 @@ function draw(t, still) {
   const c = color.join(',');
 
   const eg = ctx.createRadialGradient(ex, ey, 0, ex, ey, 160);
-  eg.addColorStop(0, `rgba(${c},.5)`); eg.addColorStop(1, `rgba(${c},0)`);
+  eg.addColorStop(0, `rgba(${c},${.5 * bb})`); eg.addColorStop(1, `rgba(${c},0)`);
   ctx.fillStyle = eg; ctx.fillRect(ex - 160, ey - 160, 320, 320);
 
   const base = Math.atan2(cur.y - ey, cur.x - ex);
@@ -430,9 +487,9 @@ function draw(t, still) {
     gr.addColorStop(0, `rgba(${c},1)`); gr.addColorStop(.45, `rgba(${c},.35)`); gr.addColorStop(1, `rgba(${c},0)`);
     ctx.strokeStyle = gr;
     ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(x2, y2);
-    ctx.lineWidth = 12;  ctx.globalAlpha = .05; ctx.stroke();
-    ctx.lineWidth = 3.5; ctx.globalAlpha = .16; ctx.stroke();
-    ctx.lineWidth = 1.1; ctx.globalAlpha = .9;  ctx.stroke();
+    ctx.lineWidth = 12;  ctx.globalAlpha = .05 * bb; ctx.stroke();
+    ctx.lineWidth = 3.5; ctx.globalAlpha = .16 * bb; ctx.stroke();
+    ctx.lineWidth = 1.1; ctx.globalAlpha = .9  * bb; ctx.stroke();
   }
 
   // Haze particles light up when a beam passes through them
@@ -452,7 +509,7 @@ function draw(t, still) {
       const perp = vx * dy - vy * dx, sig = 6 + along * .012;
       lit += Math.exp(-(perp * perp) / (2 * sig * sig)) * (1 - along / L);
     }
-    ctx.globalAlpha = Math.min(1, lit) * p.a;
+    ctx.globalAlpha = Math.min(1, lit) * p.a * bb;
     ctx.fillRect(p.x, p.y, p.s, p.s);
   }
   ctx.globalAlpha = 1;
@@ -513,6 +570,31 @@ const sectionObs = new IntersectionObserver(entries => {
   });
 }, { rootMargin: '-45% 0px -50% 0px' });
 document.querySelectorAll('main .section').forEach(s => sectionObs.observe(s));
+
+/* ================= Disciplines ================= */
+document.querySelectorAll('.discipline').forEach(d => {
+  const h = d.querySelector('h3');
+  d.id = d.id || h.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-');
+
+  // Counts are read from the markup, so adding a project never leaves a stale number behind.
+  const n = d.querySelectorAll('.project, .pkg').length;
+  const label = d.querySelector('.count');
+  const unit = d.dataset.unit || 'project';     // data-unit="write-up" relabels a section
+  if (label && !label.textContent.trim()) label.textContent = `${n} ${unit}${n === 1 ? '' : 's'}`;
+
+  if (location.hash === '#' + d.id) d.open = true;
+
+  // After it expands, pull the heading up if the contents opened below the fold.
+  d.addEventListener('toggle', () => {
+    if (!d.open) return;
+    setTimeout(() => {
+      const r = d.getBoundingClientRect();
+      if (r.top > innerHeight * .55 || (r.bottom > innerHeight && r.top > 120)) {
+        d.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+      }
+    }, 240);
+  });
+});
 
 /* ================= Clips play only while on screen ================= */
 const clipObs = new IntersectionObserver(entries => {
@@ -578,21 +660,36 @@ const tiles = data.map((p, i) => {
 });
 
 // Masonry: place each frame in the shortest column. Aspect ratios are known, so no image needs to load first.
-let cols = 0;
+let cols = 0, kind = 'all';
 const mqA = matchMedia('(min-width: 560px)'), mqB = matchMedia('(min-width: 1024px)');
-function layout() {
+const shown = () => data.map((p, i) => i).filter(i => kind === 'all' || data[i].type === kind);
+
+function layout(force) {
   const n = mqB.matches ? 4 : mqA.matches ? 3 : 2;
-  if (n === cols) return; cols = n;
+  if (n === cols && !force) return; cols = n;
   const colEls = Array.from({ length: n }, () => { const d = document.createElement('div'); d.className = 'col'; return d; });
   const heights = new Array(n).fill(0);
-  tiles.forEach((el, i) => {
+  shown().forEach(i => {
     let m = 0; for (let j = 1; j < n; j++) if (heights[j] < heights[m] - .01) m = j;
-    colEls[m].append(el); heights[m] += data[i].h / data[i].w;
+    colEls[m].append(tiles[i]); heights[m] += data[i].h / data[i].w;
   });
   grid.replaceChildren(...colEls);
 }
-mqA.addEventListener('change', layout); mqB.addEventListener('change', layout);
+mqA.addEventListener('change', () => layout()); mqB.addEventListener('change', () => layout());
 layout();
+
+// The filter only appears when there is actually something to filter.
+const filter = document.getElementById('filter');
+if (data.some(p => p.type === 'video') && data.some(p => p.type === 'image')) {
+  filter.hidden = false;
+  filter.addEventListener('click', e => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    kind = btn.dataset.filter;
+    filter.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+    layout(true);
+  });
+}
 
 /* ================= Viewer ================= */
 const lb = document.getElementById('lightbox');
@@ -601,6 +698,7 @@ let idx = 0;
 function show(i) {
   idx = (i + data.length) % data.length;
   const p = data[idx];
+  const list = shown();
   let el;
   if (p.demo) {
     el = document.createElement('div'); el.className = 'demo';
@@ -615,20 +713,26 @@ function show(i) {
   }
   slot.replaceChildren(el);
   cap.textContent = p.caption || p.alt || '';
-  count.textContent = `${idx + 1} of ${data.length}`;
+  count.textContent = `${list.indexOf(idx) + 1} of ${list.length}`;
   [1, -1].forEach(d => {                       // warm the cache for neighbours
-    const q = data[(idx + d + data.length) % data.length];
+    const q = data[step(d)];
     if (q && !q.demo && q.type !== 'video') new Image().src = q.full || q.thumb;
   });
 }
+// Move to the next or previous frame among the ones currently shown.
+function step(d) {
+  const list = shown();
+  const at = list.indexOf(idx);
+  return list[((at < 0 ? 0 : at + d) + list.length) % list.length];
+}
 function openViewer(i) { show(i); lb.showModal(); }
 lb.querySelector('.lb-close').addEventListener('click', () => lb.close());
-lb.querySelector('.lb-prev').addEventListener('click', () => show(idx - 1));
-lb.querySelector('.lb-next').addEventListener('click', () => show(idx + 1));
+lb.querySelector('.lb-prev').addEventListener('click', () => show(step(-1)));
+lb.querySelector('.lb-next').addEventListener('click', () => show(step(1)));
 lb.addEventListener('close', () => slot.replaceChildren());
 lb.addEventListener('keydown', e => {
-  if (e.key === 'ArrowRight') show(idx + 1);
-  else if (e.key === 'ArrowLeft') show(idx - 1);
+  if (e.key === 'ArrowRight') show(step(1));
+  else if (e.key === 'ArrowLeft') show(step(-1));
 });
 let sx = null, swiped = false;
 lb.addEventListener('click', e => {
@@ -639,7 +743,7 @@ lb.addEventListener('pointerdown', e => { if (e.target.tagName !== 'VIDEO') sx =
 lb.addEventListener('pointerup', e => {
   if (sx === null) return;
   const dx = e.clientX - sx; sx = null;
-  if (Math.abs(dx) > 50) { swiped = true; show(idx + (dx < 0 ? 1 : -1)); }
+  if (Math.abs(dx) > 50) { swiped = true; show(step(dx < 0 ? 1 : -1)); }
 });
 })();
 </script>
