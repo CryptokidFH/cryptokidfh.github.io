@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- EDIT: your name and a one-line description (shows in search results and link previews) -->
-<title>Your Name: light, code, and hardware</title>
+<title>Calvin Moras: light, code, and hardware</title>
 <meta name="description" content="Real-time visuals in TouchDesigner, laser systems, reverse engineering, Python, and photography.">
 <meta property="og:title" content="Your Name">
 <meta property="og:description" content="Real-time visuals, lasers, reverse engineering, Python, and photography.">
@@ -182,7 +182,7 @@ footer{max-width:90rem;margin:0 auto;padding:clamp(4rem,10vh,7rem) var(--pad) ma
   <section class="hero" id="top">
     <canvas id="beam" aria-hidden="true"></canvas>
     <div class="hero-copy">
-      <h1><span>Your</span><span>Name</span></h1><!-- EDIT: first / last name -->
+      <h1><span>Calvin</span><span>Moras</span></h1>
       <!-- EDIT: one or two sentences, in your voice -->
       <p class="lede">I build with light: real-time visuals in TouchDesigner, laser systems, and teardowns of hardware I wasn't supposed to open. I also write Python and carry a camera most places.</p>
     </div>
@@ -328,13 +328,13 @@ footer{max-width:90rem;margin:0 auto;padding:clamp(4rem,10vh,7rem) var(--pad) ma
     <div class="section-head"><h2>About</h2></div>
     <div class="about">
       <div class="prose"><!-- EDIT -->
-        <p>A few sentences about how you got here: what pulled you toward light and hardware, and what ties the projects together.</p>
-        <p>What you're working on now, and the kind of collaboration or work you're open to.</p>
+        <p>I've always had a fascination with lights from an early age, as well as electronics and computers.</p>
+        <p>I'm always looking for new light sources to play with, especially if I can write a keyboard shortcut to control them!</p>
       </div>
       <ul class="contact"><!-- EDIT: your links -->
-        <li><a href="mailto:you@example.com">Email <span>you@example.com</span></a></li>
-        <li><a href="https://github.com/">GitHub <span>@yourhandle</span></a></li>
-        <li><a href="https://pypi.org/">PyPI <span>your-package</span></a></li>
+        <li><a href="mailto:you@example.com">Email <span>calvinmoras117@gmail.com</span></a></li>
+        <li><a href="https://github.com/CryptokidFH">GitHub <span>@CryptokidFH</span></a></li>
+        <li><a href="https://pypi.org/project/pyrava">PyPI <span>Pyrava</span></a></li>
         <li><a href="resume.pdf">Résumé <span>PDF</span></a></li>
       </ul>
     </div>
