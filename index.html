@@ -50,7 +50,7 @@ a:hover{text-decoration-color:var(--beam)}
 .nav ul a:hover,.nav ul a[aria-current="true"]{color:var(--text)}
 
 /* Hero: the laser stage */
-.hero{position:relative;height:100svh;min-height:34rem;overflow:hidden;touch-action:pan-y;cursor:crosshair;
+.hero{position:relative;height:100vh;height:100svh;min-height:34rem;overflow:hidden;touch-action:pan-y;cursor:crosshair;
   display:grid;align-content:end;padding:0 var(--pad) clamp(1.5rem,5vh,3.5rem)}
 .hero canvas{position:absolute;inset:0;width:100%;height:100%}
 .hero-copy,.hero-controls{position:relative}
@@ -415,7 +415,9 @@ const coarse = matchMedia('(hover: none)').matches;
 /* ================= Laser stage ================= */
 const hero = document.querySelector('.hero');
 const cv = document.getElementById('beam');
-const ctx = cv.getContext('2d', { alpha: false });
+// Transparent rather than opaque: anything the beams don't reach shows the page
+// background instead of a hard-edged box.
+const ctx = cv.getContext('2d');
 const HAZE = '22,19,43';
 const BEAMS = 7;
 const dirs = new Float32Array(BEAMS * 2);
@@ -439,12 +441,16 @@ function seed() {
 
 function resize() {
   const r = hero.getBoundingClientRect();
-  if (!r.width) return;
-  W = r.width; H = r.height;
+  if (!r.width || !r.height) return;
+  W = r.width; H = r.height;                  // the hero's full border box, padding included
   const dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
   cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+  // Position and size the canvas from JS as well as CSS. Browsers vary in what a
+  // percentage resolves against here, and getting it wrong leaves the beams painted
+  // into a box narrower than the screen.
+  cv.style.cssText = `position:absolute;left:0;top:0;width:${W}px;height:${H}px`;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  ctx.fillStyle = `rgb(${HAZE})`; ctx.fillRect(0, 0, W, H);
+  ctx.clearRect(0, 0, W, H);
   seed();
   if (!cur.x) { cur.x = aim.x = W * .38; cur.y = aim.y = H * .3; }
   if (reduce || !running) draw(performance.now(), true);
@@ -465,8 +471,9 @@ function draw(t, still) {
   const k = (reduce || still) ? 1 : .075;
   cur.x += (aim.x - cur.x) * k; cur.y += (aim.y - cur.y) * k;
 
-  ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
-  ctx.fillStyle = (reduce || still) ? `rgb(${HAZE})` : `rgba(${HAZE},.38)`;   // partial clear leaves a short persistence trail
+  ctx.globalCompositeOperation = (reduce || still) ? 'copy' : 'source-over';
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = `rgba(${HAZE},.38)`;   // a partial cover leaves a short persistence trail
   ctx.fillRect(0, 0, W, H);
   ctx.globalCompositeOperation = 'lighter';
   const c = color.join(',');
@@ -527,7 +534,19 @@ function loop(t) {
     }
   }
   last = t;
+  if ((checks = (checks + 1) % 30) === 0) verifySize();
   draw(t);
+}
+
+// Phone browsers resize the hero as the address bar moves, and a first measurement
+// taken mid-layout can be wrong. Re-check periodically rather than trusting one reading.
+let checks = 0;
+function verifySize() {
+  const r = hero.getBoundingClientRect();
+  if (!r.width) return;
+  const c = cv.getBoundingClientRect();
+  if (Math.abs(r.width - W) > 1 || Math.abs(r.height - H) > 1 ||
+      Math.abs(c.width - W) > 1 || Math.abs(c.height - H) > 1) resize();
 }
 function setRunning() {
   const should = visible && !document.hidden && !reduce;
@@ -551,7 +570,12 @@ document.querySelectorAll('.nm button').forEach(btn => btn.addEventListener('cli
 
 if (coarse) document.getElementById('hint').textContent = 'Drag sideways across the stage to aim the beam.';
 
-new ResizeObserver(resize).observe(hero);
+new ResizeObserver(() => resize()).observe(hero);
+addEventListener('orientationchange', () => setTimeout(resize, 250));
+addEventListener('pageshow', () => resize());
+addEventListener('load', () => resize());
+if (window.visualViewport) visualViewport.addEventListener('resize', verifySize);
+if (document.fonts) document.fonts.ready.then(() => resize());
 document.addEventListener('visibilitychange', setRunning);
 
 /* ================= Navigation state ================= */
